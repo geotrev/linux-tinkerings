@@ -84,7 +84,4 @@ nmcli connection up "CONNECTION_NAME_HERE"
 
 Some monitors don't wake properly for EOS. Wake by turning on monitor is more consistent than mouse/keyboard.
 
-Reading:
-
-- [Environment Variables](https://invent.kde.org/plasma/kwin/-/wikis/Environment-Variables#kwin_drm_devices) (kwin_drm_devices)
-- [Plasma Wayland Workaround](https://breadcat.run/blog/plasma-wayland-nvidia-lil-workaround/) by Breadcat
+[Debugging attempted]([url](https://bugs.kde.org/show_bug.cgi?id=514471))
