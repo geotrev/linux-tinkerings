@@ -9,6 +9,8 @@ Further reading:
 
 ## Drivers
 
+> NOTE: This won't be necessary with EOS Ganymede Neo, which provides sensible defaults OOTB.
+
 Required for NVIDIA cards. After fresh endeavourOS install, restart into the fallback boot entry.
 
 Install drivers:
@@ -22,9 +24,24 @@ Reboot with the default boot entry and everything should render normally.
 
 [endeavourOS Discovery Page](https://discovery.endeavouros.com/nvidia/new-nvidia-driver-installer-nvidia-inst/2022/03/)
 
+## Maintenance scripts
+
+Add [these scripts](https://github.com/geotrev/linux-tinkerings/tree/main/scripts) to simplify maintenance (in `$HOME/scripts/`). Inspired by the first link at the top.
+
+## Optimizing mirrors
+
+Your ISP probably gives a bad resolver path to the AUR, causing delays in package synchronization.
+
+Update `/etc/resolve.conf` with this to Go Fast™️:
+
+```
+nameserver 1.1.1.1
+nameserver 1.0.0.1
+```
+
 ## Discord
 
-Install discord separately with flatpak because it's chronically out of sync with its update daemon.
+Install discord separately with flatpak because it's chronically out of sync with AUR.
 
 ## Monitor compatibility
 
