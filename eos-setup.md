@@ -1,11 +1,6 @@
 # EndeavourOS Install Requirements
 
-This doc was written for Intel CPU / NVIDIA architecture with `systemd-boot` as boot manager.
-
-Further reading:
-
-- [The idiots Guide to EndeavourOS by killajoe](https://github.com/killajoe/The_Idiots_Guide_to_EndeavourOS)
-- [How to Use the Command `yay` (with examples) by CommandMasters](https://commandmasters.com/commands/yay-linux/)
+This doc was written for Intel CPU / NVIDIA architecture with `systemd-boot` and `dracut`.
 
 ## Drivers
 
@@ -26,11 +21,20 @@ Reboot with the default boot entry and everything should render normally.
 
 ## Maintenance scripts
 
-Add [these scripts](https://github.com/geotrev/linux-tinkerings/tree/main/scripts) to simplify maintenance (in `$HOME/scripts/`). Inspired by the first link at the top.
+Add [these scripts](https://github.com/geotrev/linux-tinkerings/tree/main/scripts) to simplify maintenance (in `$HOME/scripts/`).
+
+Further reading:
+- [The idiots Guide to EndeavourOS by killajoe](https://github.com/killajoe/The_Idiots_Guide_to_EndeavourOS)
+- [How to Use the Command `yay` (with examples) by CommandMasters](https://commandmasters.com/commands/yay-linux/)
+
+
+### Note on synchronization
+
+Some packages are chronically out of date with the AUR, such as Discord. Use an alternate source like flatpak instead (included in the update script).
 
 ## Optimizing mirrors
 
-Your ISP probably gives a bad resolver path to the AUR, causing delays in package synchronization.
+If `yay` is slow (5+ or even 10+ seconds), then it's probably due to a bad nameserver/route to repos.
 
 Update `/etc/resolve.conf` with this to Go Fast™️:
 
@@ -39,15 +43,9 @@ nameserver 1.1.1.1
 nameserver 1.0.0.1
 ```
 
-## Discord
-
-Install discord separately with flatpak because it's chronically out of sync with AUR.
-
 ## Monitor compatibility
 
-Wake system by turning on monitor. Avoid wake-on-USB.
-
-[See this gist.](https://gist.github.com/geotrev/b61ec237717b2189a495a12adce619aa)
+Some monitors don't wake properly for EOS. Wake by turning on monitor is more consistent than mouse/keyboard.
 
 Reading:
 
