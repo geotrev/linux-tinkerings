@@ -21,27 +21,64 @@ Reboot with the default boot entry and everything should render normally.
 
 ## Maintenance scripts
 
-Add [these scripts](https://github.com/geotrev/linux-tinkerings/tree/main/scripts) to simplify maintenance (in `$HOME/scripts/`).
+Add [these scripts](https://github.com/geotrev/linux-tinkerings/tree/main/scripts) to simplify maintenance (in `$HOME/scripts/`). Make them executable.
+
+- `sys-update.sh` - Run weekly
+- `sys-cache.sh` - Run monthly
+- `sys-mirrors.sh` - Run monthly
 
 Further reading:
 - [The idiots Guide to EndeavourOS by killajoe](https://github.com/killajoe/The_Idiots_Guide_to_EndeavourOS)
 - [How to Use the Command `yay` (with examples) by CommandMasters](https://commandmasters.com/commands/yay-linux/)
 
+## Package managers
 
-### Note on synchronization
+Alternatives like flatpak and snap could be used if the AUR has unideal versions of packages. For example, Discord, which is often out of sync with the latest version from `discord.com`.
 
-Some packages are chronically out of date with the AUR, such as Discord. Use an alternate source like flatpak instead (included in the update script).
+## Optimizing mirror speed
 
-## Optimizing mirrors
+Sometimes updating mirrors isn't enough and `yay` is slow (like, 5-10s to fetch, slow). Likely this is due to a bad DNS default in the system. Likely because the DNS is inherited from your ISP.
 
-If `yay` is slow (5+ or even 10+ seconds), then it's probably due to a bad nameserver/route to repos.
+Verify the speed like so: `time yay`. If it's longer than a few seconds, it's too slow. :)
 
-Update `/etc/resolve.conf` with this to Go Fast™️:
+<details>
+<summary>How to fix</summary>
+
+You can use NetworkManager for this.
+
+First get the primary connection name. The name should match whatever your network manager GUI sees (e.g., "Wired connection 1").
 
 ```
-nameserver 1.1.1.1
-nameserver 1.0.0.1
+nmcli connection show
 ```
+
+Next, set your connection's DNS using `nmcli`. Two options here:
+- Cloudflare: `1.1.1.1 1.0.0.1`
+- IoT device (e.g. Pi-hole): `192.168.1.X`
+
+```
+nmcli connection modify "CONNECTION_NAME_HERE" ipv4.dns "IP_VALUE_HERE"
+```
+
+Then refresh:
+
+```
+nmcli connection modify "CONNECTION_NAME_HERE" ipv4.ignore-auto-dns yes
+nmcli connection up "CONNECTION_NAME_HERE"
+```
+
+Reboot and verify the value in `/etc/resolv.conf`.
+
+---
+
+You can undo this anytime by running:
+
+```
+nmcli connection modify "CONNECTION_NAME_HERE" ipv4.dns ""
+nmcli connection modify "CONNECTION_NAME_HERE" ipv4.ignore-auto-dns no
+nmcli connection up "CONNECTION_NAME_HERE"
+```
+</details>
 
 ## Monitor compatibility
 
