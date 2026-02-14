@@ -1,31 +1,27 @@
-TL;DR creating an SMB connection in Dolphin is _not_ the same as mounting the network folder in your file system.
+## Mount a network drive
 
-Mount the drive to local file system for things like accessing files in apps reliably.
-
-# Steps
-
-1. Created a mount point (in this case: `/mnt/nas/music`
-2. My NAS has credentials so I created a file for that: `/root/.smbcredentials` with contents like this:
+1. Create a mount point (e.g. `/mnt/nas/media`
+2. If credentials required, create them in `/root/.smbcredentials`:
 
 ```
 username=xxxxxx
 password=xxxxxx
 ```
 
-3. Then set permissions on the file (based on what I saw others doing, seems fair): `sudo chmod 600 /root/.smbcredentials`
+3. Set permissions on the file: `sudo chmod 600 /root/.smbcredentials`
 
-4. Tested the mount:
-
-```
-$ sudo mount -t cifs //192.168.x.x/Shared/Music /mnt/nas/music -o credentials=/root/.smbcredentials
-```
-
-5. After confirming this works (`sudo ls /mnt/nas/music`), I unmounted the drive: `sudo umount /mnt/nas/music`
-
-6. Then added a new fstab entry to make it official (again, based on some resources I was reading):
+4. Test the mount:
 
 ```
-//192.168.x.x/Shared/Music /mnt/nas/music cifs credentials=/root/.smbcredentials,uid=1000,gid=1000,file_mode=0755,dir_mode=0755 0 0
+$ sudo mount -t cifs //192.168.x.x/media /mnt/nas/media -o credentials=/root/.smbcredentials
 ```
 
-7. Restart daemons: `sudo systemctl daemon-reload`
+5. If files appeared in the directory, success; now unmount the drive: `sudo umount /mnt/nas/media`
+
+6. Add an fstab entry to make it official:
+
+```
+//192.168.x.x/media /mnt/nas/media cifs credentials=/root/.smbcredentials,uid=1000,gid=1000,file_mode=0755,dir_mode=0755 0 0
+```
+
+7. Remount drives: `sudo mount -a`
