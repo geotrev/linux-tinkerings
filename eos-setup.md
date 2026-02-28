@@ -48,26 +48,20 @@ You can use NetworkManager for this.
 
 First get the primary connection name. The name should match whatever your network manager GUI sees (e.g., "Wired connection 1").
 
-```
-nmcli connection show
+```sh
+$ nmcli connection show
 ```
 
 Next, set your connection's DNS using `nmcli`. Two options here:
 - Cloudflare: `1.1.1.1 1.0.0.1`
 - IoT device (e.g. Pi-hole): `192.168.1.X`
 
-```
-nmcli connection modify "CONNECTION_NAME_HERE" ipv4.dns "IP_VALUE_HERE"
-```
-
-Then refresh:
-
-```
-nmcli connection modify "CONNECTION_NAME_HERE" ipv4.ignore-auto-dns yes
-nmcli connection up "CONNECTION_NAME_HERE"
+```sh
+$ nmcli connection modify "CONNECTION_NAME_HERE" ipv4.dns "IP_VALUE_HERE" ipv4.ignore-auto-dns yes
+$ nmcli connection up "CONNECTION_NAME_HERE"
 ```
 
-Reboot and verify the value in `/etc/resolv.conf`.
+Reboot and verify the value in `/etc/resolv.conf` was set automatically.
 
 ---
 
@@ -78,6 +72,26 @@ nmcli connection modify "CONNECTION_NAME_HERE" ipv4.dns ""
 nmcli connection modify "CONNECTION_NAME_HERE" ipv4.ignore-auto-dns no
 nmcli connection up "CONNECTION_NAME_HERE"
 ```
+</details>
+
+## Disconnected ethernet
+
+EOS can be fragile at times and rename your wired connection (undoing modified DNS configuration). Easiest path forward is to drop the connection and recreate it.
+
+<details>
+<summary>How to fix</summary>
+
+If your connection was renamed, fully disconnect and remove it from Network settings first.
+
+Then in terminal, get the interface name and connect to it (e.g., `enp1s1` or similar)
+
+```sh
+$ ip link show
+$ nmcli device connect enp1s1
+```
+
+Then run the modify command in the previous section, refresh it, and reboot to confirm all is working.
+
 </details>
 
 ## Monitor compatibility
