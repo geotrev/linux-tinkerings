@@ -19,6 +19,56 @@ Reboot with the default boot entry and everything should render normally.
 
 [endeavourOS Discovery Page](https://discovery.endeavouros.com/nvidia/new-nvidia-driver-installer-nvidia-inst/2022/03/)
 
+## Timeshift
+
+Install `timeshift` and `timeshift-autosnap`. Configure exclude/include filters and set a schedule.
+
+To allow scheduled backups, you'll need to set that up in terminal.
+
+<details>
+<summary>Setup</summary>
+Use your existing cron daemon, otherwise install one:
+
+```sh
+$ yay -S cronie
+$ sudo systemctl enable --now cronie
+```
+
+Then verify:
+
+```sh
+$ journalctl -u cronie --since "1 hour ago"
+```
+
+You should see something like this:
+
+```
+Mar 06 14:00:00 serenade CROND[18087]: (root) CMD (timeshift --check --scripted)
+Mar 06 14:00:01 serenade CROND[18086]: (root) CMDOUT (Mounted '/dev/nvme1n1p2' at '/run/timeshift/18087/backup')
+Mar 06 14:00:01 serenade CROND[18086]: (root) CMDOUT (Daily snapshots are enabled)
+Mar 06 14:00:01 serenade CROND[18086]: (root) CMDOUT (Last daily snapshot is 0 hours old)
+Mar 06 14:00:01 serenade CROND[18086]: (root) CMDOUT (Weekly snapshots are enabled)
+Mar 06 14:00:01 serenade CROND[18086]: (root) CMDOUT (Last weekly snapshot is 0 days old)
+Mar 06 14:00:01 serenade CROND[18086]: (root) CMDOUT (Monthly snapshot are enabled)
+Mar 06 14:00:01 serenade CROND[18086]: (root) CMDOUT (Last monthly snapshot is 0 days old)
+Mar 06 14:00:01 serenade CROND[18086]: (root) CMDOUT (------------------------------------------------------------------------------)
+Mar 06 14:00:01 serenade CROND[18086]: (root) CMDEND (timeshift --check --scripted)
+Mar 06 14:01:00 serenade CROND[18537]: (root) CMD (run-parts /etc/cron.hourly)
+```
+
+Additionally, you may see another cron result that that tells you the deadlines of each snapshot type (e.g., daily, monthly):
+
+```
+Mar 06 14:01:00 serenade anacron[18543]: Anacron started on 2026-03-06
+Mar 06 14:01:00 serenade anacron[18543]: Will run job `cron.daily' in 8 min.
+Mar 06 14:01:00 serenade anacron[18543]: Will run job `cron.weekly' in 28 min.
+Mar 06 14:01:00 serenade anacron[18543]: Will run job `cron.monthly' in 48 min.
+Mar 06 14:01:00 serenade anacron[18543]: Jobs will be executed sequentially
+```
+
+</details>
+
+
 ## Maintenance scripts
 
 Add [these scripts](https://github.com/geotrev/linux-tinkerings/tree/main/scripts) to simplify maintenance (in `$HOME/scripts/`). Make them executable.
@@ -39,7 +89,7 @@ Alternatives like flatpak and snap could be used if the AUR has unideal versions
 
 Sometimes updating mirrors isn't enough and `yay` is slow (like, 5-10s to fetch, slow). Likely this is due to a bad DNS default in the system. Likely because the DNS is inherited from your ISP.
 
-Verify the speed like so: `time yay`. If it's longer than a few seconds, it's too slow. :)
+Verify the speed like so: `time yay`. If it's longer than a few seconds, it can go faster.
 
 <details>
 <summary>How to fix</summary>
